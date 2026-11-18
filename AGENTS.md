@@ -28,3 +28,8 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Project rules
+- ML code (data, preprocessing, models, metrics) lives in `src/lib/iris/` as pure TypeScript with no React; UI imports it. Why: keeps training testable in vitest and swappable.
+- App-wide state (dataset, training run, trained model) lives in `IrisProvider` mounted in `__root.tsx`. Why: a trained model must survive navigation between pages.
+- Species colours come only from `SPECIES_COLORS` (CSS vars `--species-*`). Why: every chart must use the same colour per species.

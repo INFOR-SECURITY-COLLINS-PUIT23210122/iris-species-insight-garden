@@ -14,7 +14,7 @@ export function ConfusionMatrix({ matrix }: { matrix: number[][] }) {
               actual ↓ / predicted →
             </th>
             {SPECIES.map((s) => (
-              <th key={s} className="px-2 pb-1 text-xs font-medium capitalize">
+              <th key={s} className="px-1 pb-1 text-[11px] font-medium capitalize">
                 <span className="flex items-center justify-center gap-1.5">
                   <SpeciesDot color={SPECIES_COLORS[s]} className="size-2" />
                   {s}
@@ -38,7 +38,7 @@ export function ConfusionMatrix({ matrix }: { matrix: number[][] }) {
                 return (
                   <td
                     key={j}
-                    className="tabular size-16 rounded-lg text-center text-lg font-medium sm:size-20"
+                    className="tabular size-14 rounded-lg text-center text-lg font-medium sm:size-16"
                     style={{
                       backgroundColor: v
                         ? `color-mix(in oklab, ${diag ? "var(--success)" : "var(--destructive)"} ${Math.round(18 + intensity * 62)}%, transparent)`

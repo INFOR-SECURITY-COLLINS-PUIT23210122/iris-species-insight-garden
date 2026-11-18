@@ -72,7 +72,7 @@ export function ScatterPlot({ data }: { data: IrisSample[] }) {
               type="number"
               dataKey={x}
               name={FEATURE_LABELS[x]}
-              domain={["dataMin - 0.3", "dataMax + 0.3"]}
+              domain={[(min: number) => Math.max(0, Math.floor(min - 0.3)), (max: number) => Math.ceil(max + 0.3)]}
               tickFormatter={(v: number) => v.toFixed(1)}
               stroke="var(--muted-foreground)"
               fontSize={12}
@@ -82,7 +82,7 @@ export function ScatterPlot({ data }: { data: IrisSample[] }) {
               type="number"
               dataKey={y}
               name={FEATURE_LABELS[y]}
-              domain={["dataMin - 0.3", "dataMax + 0.3"]}
+              domain={[(min: number) => Math.max(0, Math.floor(min - 0.3)), (max: number) => Math.ceil(max + 0.3)]}
               tickFormatter={(v: number) => v.toFixed(1)}
               stroke="var(--muted-foreground)"
               fontSize={12}
