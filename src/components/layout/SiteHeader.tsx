@@ -31,6 +31,7 @@ export function SiteHeader() {
             <Link
               key={to}
               to={to}
+              aria-label={label}
               activeOptions={{ exact: true }}
               className="flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground sm:px-3"
               activeProps={{ className: "bg-secondary text-secondary-foreground font-medium" }}
