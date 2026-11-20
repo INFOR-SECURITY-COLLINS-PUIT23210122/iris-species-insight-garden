@@ -147,7 +147,7 @@ export function TrainingForm() {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Field id="epochs" label="Epochs" hint="1–1000" value={values.epochs} error={errors.epochs} onChange={set("epochs")} disabled={training} />
             <Field id="learningRate" label="Learning rate" hint="e.g. 0.01" step="0.001" value={values.learningRate} error={errors.learningRate} onChange={set("learningRate")} disabled={training} />
             <Field id="hidden" label="Hidden units" hint="2–64" value={values.hidden} error={errors.hidden} onChange={set("hidden")} disabled={training} />

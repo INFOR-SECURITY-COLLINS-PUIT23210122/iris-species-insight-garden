@@ -29,12 +29,12 @@ function FeatureSelect({
   onChange: (f: Feature) => void;
 }) {
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex min-w-0 flex-1 items-center gap-2">
       <Label htmlFor={id} className="text-xs text-muted-foreground">
         {label}
       </Label>
       <Select value={value} onValueChange={(v) => onChange(v as Feature)}>
-        <SelectTrigger id={id} className="h-8 w-[150px]">
+        <SelectTrigger id={id} className="h-9 w-full min-w-0">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
@@ -58,7 +58,7 @@ export function ScatterPlot({ data }: { data: IrisSample[] }) {
       title="Feature scatter plot"
       description="Pick any two measurements to see how well they separate the species."
       action={
-        <div className="flex flex-wrap gap-3">
+        <div className="flex w-full flex-wrap gap-3 sm:w-auto">
           <FeatureSelect id="x-feature" label="X" value={x} onChange={setX} />
           <FeatureSelect id="y-feature" label="Y" value={y} onChange={setY} />
         </div>

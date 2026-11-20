@@ -197,6 +197,13 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* Keep toasts clear of the phone-only bottom tab bar (md breakpoint = 768px). */
+@media (max-width: 767px) {
+  [data-sonner-toaster][data-y-position="bottom"] {
+    bottom: calc(5.5rem + env(safe-area-inset-bottom)) !important;
+  }
+}
+
 @keyframes rise {
   from {
     opacity: 0;

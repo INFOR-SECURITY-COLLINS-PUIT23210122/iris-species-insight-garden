@@ -1,20 +1,39 @@
-// Per-feature summary statistics table plus class-count bars.
+// Per-feature summary statistics plus class-count bars.
 import { Panel, SpeciesDot } from "@/components/iris/Panel";
 import { classCounts, summarize } from "@/lib/iris/stats";
 import { FEATURE_LABELS, SPECIES, SPECIES_COLORS, type IrisSample } from "@/lib/iris/types";
 
 const fmt = (n: number) => n.toFixed(2);
+const HEADINGS = ["Mean", "Std", "Min", "Median", "Max"] as const;
 
 export function SummaryStats({ data }: { data: IrisSample[] }) {
   const stats = summarize(data);
   return (
     <Panel title="Summary statistics" description="All measurements in centimetres.">
-      <div className="overflow-x-auto">
+      {/* Phones: one card per measurement so nothing has to be scrolled sideways. */}
+      <ul className="grid gap-3 sm:hidden">
+        {stats.map((s) => (
+          <li key={s.feature} className="rounded-lg border bg-muted/30 p-3">
+            <p className="text-sm font-medium">{FEATURE_LABELS[s.feature]}</p>
+            <dl className="mt-2 grid grid-cols-5 gap-1">
+              {HEADINGS.map((h, i) => (
+                <div key={h} className="rounded-md bg-background/70 px-1 py-1.5 text-center">
+                  <dt className="text-[10px] tracking-wide text-muted-foreground uppercase">{h}</dt>
+                  <dd className="tabular text-sm">{fmt([s.mean, s.std, s.min, s.median, s.max][i] ?? 0)}</dd>
+                </div>
+              ))}
+            </dl>
+          </li>
+        ))}
+      </ul>
+
+      {/* Tablet/desktop: the statistics table. */}
+      <div className="hidden overflow-x-auto sm:block">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b text-left text-xs text-muted-foreground">
               <th className="py-2 pr-4 font-medium">Feature</th>
-              {["Mean", "Std", "Min", "Median", "Max"].map((h) => (
+              {HEADINGS.map((h) => (
                 <th key={h} className="px-2 py-2 text-right font-medium">
                   {h}
                 </th>

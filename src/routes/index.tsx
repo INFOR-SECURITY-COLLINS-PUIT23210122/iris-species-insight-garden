@@ -41,7 +41,8 @@ function ExplorerPage() {
           alt="Botanical plate of Iris setosa, versicolor and virginica"
           width={1600}
           height={640}
-          className="h-40 w-full object-cover sm:h-56"
+          // Phones show the whole plate at its natural size so no annotation is cropped away.
+          className="h-auto w-full sm:h-56 sm:object-cover"
         />
       </div>
       <PageHeader

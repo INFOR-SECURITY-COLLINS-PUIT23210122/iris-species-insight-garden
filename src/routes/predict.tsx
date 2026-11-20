@@ -107,12 +107,12 @@ function PredictPage() {
             <p className="mt-1 max-w-sm text-sm text-muted-foreground">
               Predictions need a trained model. Set one up yourself, or train a quick neural network with the default settings.
             </p>
-            <div className="mt-5 flex flex-wrap justify-center gap-2">
-              <Button onClick={() => void train(DEFAULT_CONFIG)} disabled={status === "training"}>
+            <div className="mt-5 flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+              <Button className="w-full sm:w-auto" onClick={() => void train(DEFAULT_CONFIG)} disabled={status === "training"}>
                 {status === "training" ? <Loader2 className="animate-spin" /> : <Sparkles />}
                 {status === "training" ? "Training…" : "Quick train"}
               </Button>
-              <Button variant="outline" asChild>
+              <Button variant="outline" className="w-full sm:w-auto" asChild>
                 <Link to="/train">Choose settings</Link>
               </Button>
             </div>
@@ -153,6 +153,7 @@ function PredictPage() {
                   type="button"
                   size="lg"
                   variant="outline"
+                  className="shrink-0"
                   aria-label="Random flower from the data"
                   onClick={() => {
                     const r = data[Math.floor(Math.random() * data.length)];

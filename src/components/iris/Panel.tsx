@@ -18,12 +18,12 @@ export function Panel({
   return (
     <section className={cn("panel animate-rise p-5 sm:p-6", className)}>
       {(title || action) && (
-        <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
-          <div>
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div className="min-w-0">
             {title && <h2 className="text-lg font-semibold">{title}</h2>}
             {description && <p className="mt-0.5 text-sm text-muted-foreground">{description}</p>}
           </div>
-          {action}
+          {action && <div className="min-w-0 shrink-0">{action}</div>}
         </div>
       )}
       {children}

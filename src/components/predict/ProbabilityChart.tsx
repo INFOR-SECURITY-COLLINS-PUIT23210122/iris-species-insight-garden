@@ -20,7 +20,7 @@ export function ProbabilityChart({ probs }: { probs: number[] }) {
             fontSize={13}
             tickFormatter={(s: string) => s.charAt(0).toUpperCase() + s.slice(1)}
           />
-          <Bar dataKey="p" radius={6} background={{ fill: "var(--muted)", radius: 6 }}>
+          <Bar dataKey="p" radius={6} background={{ fill: "var(--muted)", radius: 6 }} isAnimationActive={false}>
             {data.map((d) => (
               <Cell key={d.species} fill={SPECIES_COLORS[d.species]} />
             ))}

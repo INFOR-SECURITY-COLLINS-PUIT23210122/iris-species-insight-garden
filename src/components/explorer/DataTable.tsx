@@ -1,13 +1,21 @@
-// Paginated, filterable table of all samples.
+// Paginated, filterable table of all samples: cards on phones, a real table from md up.
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { Panel, SpeciesDot } from "@/components/iris/Panel";
 import { Button } from "@/components/ui/button";
-import { FEATURES, FEATURE_LABELS, SPECIES, SPECIES_COLORS, type IrisSample, type Species } from "@/lib/iris/types";
+import { FEATURES, FEATURE_LABELS, SPECIES, SPECIES_COLORS, type Feature, type IrisSample, type Species } from "@/lib/iris/types";
 import { cn } from "@/lib/utils";
 
 const PAGE_SIZE = 10;
+
+// Short column names so all four measurements fit side by side on a phone.
+const SHORT_LABELS: Record<Feature, string> = {
+  sepalLength: "Sepal L",
+  sepalWidth: "Sepal W",
+  petalLength: "Petal L",
+  petalWidth: "Petal W",
+};
 
 export function DataTable({ data }: { data: IrisSample[] }) {
   const [page, setPage] = useState(0);
@@ -47,7 +55,33 @@ export function DataTable({ data }: { data: IrisSample[] }) {
         </div>
       }
     >
-      <div className="overflow-x-auto">
+      {/* Phones: one compact card per flower — no sideways scrolling needed. */}
+      <ul className="space-y-2 md:hidden">
+        {visible.map((r) => (
+          <li key={r.id} className="rounded-lg border bg-muted/30 p-3">
+            <div className="flex items-center justify-between gap-2">
+              <span className="flex min-w-0 items-center gap-2 text-sm font-medium capitalize">
+                <SpeciesDot color={SPECIES_COLORS[r.species]} />
+                <span className="truncate">{r.species}</span>
+              </span>
+              <span className="tabular shrink-0 text-xs text-muted-foreground">#{r.id}</span>
+            </div>
+            <dl className="mt-2 grid grid-cols-4 gap-1.5">
+              {FEATURES.map((f) => (
+                <div key={f} className="rounded-md bg-background/70 px-1 py-1.5 text-center">
+                  <dt className="text-[10px] tracking-wide text-muted-foreground uppercase">
+                    {SHORT_LABELS[f]}
+                  </dt>
+                  <dd className="tabular text-sm">{r[f].toFixed(1)}</dd>
+                </div>
+              ))}
+            </dl>
+          </li>
+        ))}
+      </ul>
+
+      {/* Tablet/desktop: the full table, scrolling sideways only if the window is narrow. */}
+      <div className="hidden overflow-x-auto md:block">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b text-left text-xs text-muted-foreground">

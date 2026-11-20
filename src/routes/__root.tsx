@@ -84,8 +84,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     // twitter:image here: every page without its own would inherit the root's preview image.
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      // viewport-fit=cover lets the phone layout use safe-area insets around the notch.
+      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
       { title: "Iris Species Classifier" },
+      { name: "theme-color", content: "#faf6ee" },
+      { name: "mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "default" },
+      { name: "apple-mobile-web-app-title", content: "Iris" },
       {
         name: "description",
         content: "Explore the Iris dataset, train a KNN or neural network in your browser and classify flowers.",
@@ -104,6 +110,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: appCss,
       },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", href: "/icons/icon-192.png", type: "image/png", sizes: "192x192" },
+      { rel: "apple-touch-icon", href: "/icons/apple-touch-icon.png", sizes: "180x180" },
+      { rel: "manifest", href: "/manifest.webmanifest" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
@@ -141,11 +150,11 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <IrisProvider>
         <SiteHeader />
-        <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
+        <main className="mx-auto max-w-6xl px-4 pt-8 pb-24 sm:px-6 sm:pt-10 md:pb-10">
           {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
           <Outlet />
         </main>
-        <footer className="mx-auto max-w-6xl px-4 pb-10 text-xs text-muted-foreground sm:px-6">
+        <footer className="mx-auto max-w-6xl px-4 pb-24 text-xs text-muted-foreground sm:px-6 md:pb-10">
           Everything runs in your browser — no data leaves your device.
         </footer>
         <Toaster position="bottom-right" />
