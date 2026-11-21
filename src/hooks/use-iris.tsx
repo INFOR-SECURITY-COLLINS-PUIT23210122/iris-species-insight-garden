@@ -1,10 +1,11 @@
 // App-wide state: active dataset, training settings, training run and trained model.
 // Lives in the root layout so a trained model survives navigation between pages.
-import { createContext, useCallback, useContext, useMemo, useRef, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 
 import { DEFAULT_DATASET_NAME, loadDefaultDataset } from "@/lib/iris/data";
 import type { EpochLog } from "@/lib/iris/mlp";
+import { loadState, saveState } from "@/lib/iris/storage";
 import { DEFAULT_CONFIG, trainModel, type TrainConfig, type TrainedModel } from "@/lib/iris/train";
 import type { IrisSample } from "@/lib/iris/types";
 
@@ -39,6 +40,36 @@ export function IrisProvider({ children }: { children: ReactNode }) {
   const [model, setModel] = useState<TrainedModel | null>(null);
   const [error, setError] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const [hydrated, setHydrated] = useState(false);
+
+  // Restore the saved dataset, settings and model after hydration (works offline).
+  useEffect(() => {
+    const saved = loadState();
+    if (saved) {
+      if (saved.dataset) {
+        setData(saved.dataset.rows);
+        setDatasetName(saved.dataset.name);
+      }
+      setConfig(saved.config);
+      if (saved.model) {
+        setModel(saved.model);
+        setLiveHistory(saved.model.history);
+        setProgress(1);
+        setStatus("done");
+      }
+    }
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated || status === "training") return;
+    const custom = datasetName !== DEFAULT_DATASET_NAME;
+    saveState({
+      ...(custom ? { dataset: { rows: data, name: datasetName } } : {}),
+      config,
+      model,
+    });
+  }, [hydrated, status, data, datasetName, config, model]);
 
   const clearModel = () => {
     abortRef.current?.abort();

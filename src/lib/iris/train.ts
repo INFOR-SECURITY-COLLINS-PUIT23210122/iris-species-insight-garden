@@ -45,7 +45,13 @@ export interface Evaluation {
   nTest: number;
 }
 
+/** Plain-JSON copy of the learned parameters, so a model can be saved and restored offline. */
+export type ModelSnapshot =
+  | { kind: "knn"; X: number[][]; y: number[]; k: number; weighted: boolean }
+  | { kind: "mlp"; hidden: number; W1: number[][]; b1: number[]; W2: number[][]; b2: number[] };
+
 export interface TrainedModel {
+  snapshot: ModelSnapshot;
   config: TrainConfig;
   scaler: Scaler;
   history: EpochLog[]; // neural network learning curve
@@ -78,6 +84,7 @@ export async function trainModel(
 
   let predict: (x: number[]) => number;
   let predictProbaScaled: (x: number[]) => number[];
+  let snapshot: ModelSnapshot;
   const history: EpochLog[] = [];
   const kSweep: KSweepPoint[] = [];
 
@@ -99,6 +106,7 @@ export async function trainModel(
     const model = new KnnModel(Xtrain, ytrain, config.k, config.weighted);
     predict = (x) => model.predict(x);
     predictProbaScaled = (x) => model.predictProba(x);
+    snapshot = { kind: "knn", X: Xtrain, y: ytrain, k: config.k, weighted: config.weighted };
   } else {
     const model = new MlpModel(4, config.hidden, 3, config.seed);
     const rng = createRng(config.seed + 1);
@@ -121,11 +129,13 @@ export async function trainModel(
     }
     predict = (x) => model.predict(x);
     predictProbaScaled = (x) => model.predictProba(x);
+    snapshot = { kind: "mlp", hidden: config.hidden, W1: model.W1, b1: model.b1, W2: model.W2, b2: model.b2 };
   }
 
   const yPred = Xtest.map(predict);
   const matrix = confusionMatrix(ytest, yPred);
   return {
+    snapshot,
     config,
     scaler,
     history,
@@ -140,5 +150,29 @@ export async function trainModel(
     trainedAt: Date.now(),
     durationMs: performance.now() - start,
     predictProba: (input) => predictProbaScaled(scale(input)),
+  };
+}
+
+export type SavedModel = Omit<TrainedModel, "predictProba">;
+
+/** Rebuilds a usable model (with predictProba) from its saved JSON form. */
+export function restoreModel(saved: SavedModel): TrainedModel {
+  const { scaler, snapshot } = saved;
+  let proba: (x: number[]) => number[];
+  if (snapshot.kind === "knn") {
+    const m = new KnnModel(snapshot.X, snapshot.y, snapshot.k, snapshot.weighted);
+    proba = (x) => m.predictProba(x);
+  } else {
+    const m = new MlpModel(4, snapshot.hidden, 3, 0);
+    m.W1 = snapshot.W1;
+    m.b1 = snapshot.b1;
+    m.W2 = snapshot.W2;
+    m.b2 = snapshot.b2;
+    proba = (x) => m.predictProba(x);
+  }
+  return {
+    ...saved,
+    predictProba: (input) =>
+      proba(toVector(input).map((v, j) => (v - scaler.mean[j]!) / scaler.std[j]!)),
   };
 }

@@ -15,6 +15,7 @@ import { SiteHeader } from "@/components/layout/SiteHeader";
 import { Toaster } from "@/components/ui/sonner";
 import { IrisProvider } from "@/hooks/use-iris";
 import { themeInitScript } from "@/hooks/use-theme";
+import { registerAppSW } from "@/lib/pwa-register";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
 function NotFoundComponent() {
@@ -145,6 +146,7 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  useEffect(() => registerAppSW(), []);
 
   return (
     <QueryClientProvider client={queryClient}>
