@@ -1,7 +1,7 @@
 // Predict: enter four measurements and see the predicted species with class probabilities.
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Loader2, Shuffle, Sparkles, Wand2 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
 import { Panel, SpeciesDot } from "@/components/iris/Panel";
 import { PageHeader } from "@/components/layout/PageHeader";
@@ -46,6 +46,7 @@ function PredictPage() {
   const [values, setValues] = useState<Values>(EXAMPLES.versicolor);
   const [errors, setErrors] = useState<Partial<Record<Feature, string>>>({});
   const [result, setResult] = useState<number[] | null>(null);
+  const resultRef = useRef<HTMLDivElement>(null);
 
   // Observed min/max per feature, shown as a hint under each input.
   const ranges = useMemo(
@@ -80,6 +81,12 @@ function PredictPage() {
     }
     if (!model) return;
     setResult(model.predictProba(parsed.data));
+    // On phones the result sits below the four sliders — bring it into view.
+    if (window.matchMedia("(max-width: 767px)").matches) {
+      requestAnimationFrame(() =>
+        resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }),
+      );
+    }
   }
 
   const best = result ? result.indexOf(Math.max(...result)) : -1;
@@ -168,6 +175,7 @@ function PredictPage() {
             </form>
           </Panel>
 
+          <div ref={resultRef} className="min-w-0 scroll-mt-20">
           <Panel title="Prediction" description={`Using the ${model.config.model === "knn" ? `KNN (k=${model.config.k})` : "neural network"} model · ${(model.evaluation.testAccuracy * 100).toFixed(1)}% test accuracy`}>
             {result && bestSpecies ? (
               <div className="animate-rise space-y-5" aria-live="polite">
@@ -193,6 +201,7 @@ function PredictPage() {
               </div>
             )}
           </Panel>
+          </div>
         </div>
       )}
     </div>

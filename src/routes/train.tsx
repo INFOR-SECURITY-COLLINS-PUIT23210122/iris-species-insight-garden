@@ -68,7 +68,7 @@ function TrainPage() {
                 </span>
                 <h2 className="mt-4 text-xl font-semibold">No model trained yet</h2>
                 <p className="mt-1 max-w-sm text-sm text-muted-foreground">
-                  Pick a model and settings on the left, then press <strong>Train Model</strong>. Results appear here.
+                  Pick a model and settings, then press <strong>Train Model</strong>. Results appear here.
                 </p>
               </div>
             </Panel>
