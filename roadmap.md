@@ -3,13 +3,13 @@
 Chosen without the user's answer (they skipped the question): phone-friendly layout **plus** an
 installable home-screen app icon (manifest-only, no offline/service worker).
 
+- [x] Audit all 4 pages at 390x844 and 1280x900 for layout problems
+- [x] Fix phone layout issues (bottom tab bar, card lists, stacked panel actions,
+      full-width chart selects, single-column NN settings, plate not cropped on phones)
 - [x] Add web app manifest + app icons + matching head tags (theme-color, apple-touch-icon)
-- [x] Verify: phone screenshots after fixes, manifest + icons served, install metadata present,
-      toast clears the tab bar, probability bars render, train -> predict flow works
-- [x] Phone: scroll the prediction result into view after Predict; drop "on the left" copy
-      that is wrong when the form stacks above the results
-- [ ] Keep desktop layout unchanged (regression check at 1280 wide)
-- [ ] Commit
-- [ ] Verify: phone screenshots after fixes, manifest served, install prompt metadata present
-- [ ] Keep desktop layout unchanged (regression check at 1280 wide)
-- [ ] Commit
+- [x] Verify: manifest + icons served, install metadata present, toast clears the tab bar,
+      probability bars render, train -> predict flow works on a phone
+- [x] Phone: scroll the prediction result into view after Predict; drop copy that pointed
+      "to the left" when the form stacks above the results
+- [x] Keep desktop layout unchanged (1280 wide: no overflow, header intact, no page jump)
+- [x] Commit
