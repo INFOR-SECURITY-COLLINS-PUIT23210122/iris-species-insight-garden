@@ -30,3 +30,15 @@ describe("offline worker never registers in previews", () => {
     expect(shouldRegisterSW({ ...base, search: "?sw=off", host: "iris.lovable.app" })).toBe(false);
   });
 });
+
+import { addRecord, HISTORY_LIMIT, type PredictionRecord } from "@/lib/iris/history";
+describe("prediction history", () => {
+  it("keeps the newest first and at most 20", () => {
+    let list: PredictionRecord[] = [];
+    for (let i = 0; i < 25; i++)
+      list = addRecord(list, { id: String(i), at: i, input: flower, species: "setosa", probs: [1, 0, 0], modelLabel: "x" });
+    expect(HISTORY_LIMIT).toBe(20);
+    expect(list).toHaveLength(20);
+    expect(list[0]!.id).toBe("24");
+  });
+});

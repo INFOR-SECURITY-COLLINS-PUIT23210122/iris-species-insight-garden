@@ -1,4 +1,4 @@
-// Paginated, filterable table of all samples: cards on phones, a real table from md up.
+// Paginated, filterable table of all samples: one table that fits phone widths.
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useMemo, useState } from "react";
 
@@ -11,10 +11,10 @@ const PAGE_SIZE = 10;
 
 // Short column names so all four measurements fit side by side on a phone.
 const SHORT_LABELS: Record<Feature, string> = {
-  sepalLength: "Sepal L",
-  sepalWidth: "Sepal W",
-  petalLength: "Petal L",
-  petalWidth: "Petal W",
+  sepalLength: "SL",
+  sepalWidth: "SW",
+  petalLength: "PL",
+  petalWidth: "PW",
 };
 
 export function DataTable({ data }: { data: IrisSample[] }) {
@@ -55,65 +55,40 @@ export function DataTable({ data }: { data: IrisSample[] }) {
         </div>
       }
     >
-      {/* Phones: one compact card per flower — no sideways scrolling needed. */}
-      <ul className="space-y-2 md:hidden">
-        {visible.map((r) => (
-          <li key={r.id} className="rounded-lg border bg-muted/30 p-3">
-            <div className="flex items-center justify-between gap-2">
-              <span className="flex min-w-0 items-center gap-2 text-sm font-medium capitalize">
-                <SpeciesDot color={SPECIES_COLORS[r.species]} />
-                <span className="truncate">{r.species}</span>
-              </span>
-              <span className="tabular shrink-0 text-xs text-muted-foreground">#{r.id}</span>
-            </div>
-            <dl className="mt-2 grid grid-cols-4 gap-1.5">
-              {FEATURES.map((f) => (
-                <div key={f} className="rounded-md bg-background/70 px-1 py-1.5 text-center">
-                  <dt className="text-[10px] tracking-wide text-muted-foreground uppercase">
-                    {SHORT_LABELS[f]}
-                  </dt>
-                  <dd className="tabular text-sm">{r[f].toFixed(1)}</dd>
-                </div>
-              ))}
-            </dl>
-          </li>
-        ))}
-      </ul>
-
-      {/* Tablet/desktop: the full table, scrolling sideways only if the window is narrow. */}
-      <div className="hidden overflow-x-auto md:block">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b text-left text-xs text-muted-foreground">
-              <th className="py-2 pr-3 font-medium">#</th>
-              {FEATURES.map((f) => (
-                <th key={f} className="px-2 py-2 text-right font-medium whitespace-nowrap">
-                  {FEATURE_LABELS[f]}
-                </th>
-              ))}
-              <th className="py-2 pl-4 font-medium">Species</th>
-            </tr>
-          </thead>
-          <tbody>
-            {visible.map((r) => (
-              <tr key={r.id} className="border-b last:border-0 hover:bg-muted/50">
-                <td className="tabular py-2 pr-3 text-muted-foreground">{r.id}</td>
-                {FEATURES.map((f) => (
-                  <td key={f} className="tabular px-2 py-2 text-right">
-                    {r[f].toFixed(1)}
-                  </td>
-                ))}
-                <td className="py-2 pl-4">
-                  <span className="flex items-center gap-2 capitalize">
-                    <SpeciesDot color={SPECIES_COLORS[r.species]} />
-                    {r.species}
-                  </span>
-                </td>
-              </tr>
+      {/* One table for every screen: fixed columns and short headers on phones, so all
+          six columns (including petal width and species) fit without sideways scrolling. */}
+      <table className="w-full table-fixed text-xs sm:table-auto sm:text-sm">
+        <thead>
+          <tr className="border-b text-left text-[10px] text-muted-foreground uppercase sm:text-xs sm:normal-case">
+            <th className="w-7 py-2 pr-1 font-medium sm:w-auto sm:pr-3">#</th>
+            {FEATURES.map((f) => (
+              <th key={f} className="px-1 py-2 text-right font-medium sm:px-2 sm:whitespace-nowrap">
+                <span className="sm:hidden">{SHORT_LABELS[f]}</span>
+                <span className="hidden sm:inline">{FEATURE_LABELS[f]}</span>
+              </th>
             ))}
-          </tbody>
-        </table>
-      </div>
+            <th className="w-[30%] py-2 pl-2 font-medium sm:w-auto sm:pl-4">Species</th>
+          </tr>
+        </thead>
+        <tbody>
+          {visible.map((r) => (
+            <tr key={r.id} className="border-b last:border-0 hover:bg-muted/50">
+              <td className="tabular py-2 pr-1 text-muted-foreground sm:pr-3">{r.id}</td>
+              {FEATURES.map((f) => (
+                <td key={f} className="tabular px-1 py-2 text-right sm:px-2">
+                  {r[f].toFixed(1)}
+                </td>
+              ))}
+              <td className="py-2 pl-2 sm:pl-4">
+                <span className="flex min-w-0 items-center gap-1.5 capitalize sm:gap-2">
+                  <SpeciesDot color={SPECIES_COLORS[r.species]} className="shrink-0" />
+                  <span className="truncate">{r.species}</span>
+                </span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
       <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
         <span className="tabular">
           Page {current + 1} of {pages}

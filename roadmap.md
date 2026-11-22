@@ -18,3 +18,7 @@ installable home-screen app icon (manifest-only, no offline/service worker).
 - [x] Save dataset, settings and trained model on the device; restore on open
 - [x] Offline worker (guarded, never in preview) caching pages and app files
 - [x] Tests for model restore and preview guards
+
+# Roadmap — prediction history + phone table
+- [x] Save each prediction on the device; recent list on Predict
+- [x] Data table fits phones with all columns
