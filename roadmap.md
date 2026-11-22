@@ -13,3 +13,8 @@ installable home-screen app icon (manifest-only, no offline/service worker).
       "to the left" when the form stacks above the results
 - [x] Keep desktop layout unchanged (1280 wide: no overflow, header intact, no page jump)
 - [x] Commit
+
+# Roadmap — offline installed app
+- [x] Save dataset, settings and trained model on the device; restore on open
+- [x] Offline worker (guarded, never in preview) caching pages and app files
+- [x] Tests for model restore and preview guards

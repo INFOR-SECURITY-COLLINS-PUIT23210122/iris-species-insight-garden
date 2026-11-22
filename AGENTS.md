@@ -33,3 +33,5 @@ use the editor.
 - ML code (data, preprocessing, models, metrics) lives in `src/lib/iris/` as pure TypeScript with no React; UI imports it. Why: keeps training testable in vitest and swappable.
 - App-wide state (dataset, training run, trained model) lives in `IrisProvider` mounted in `__root.tsx`. Why: a trained model must survive navigation between pages.
 - Species colours come only from `SPECIES_COLORS` (CSS vars `--species-*`). Why: every chart must use the same colour per species.
+- Offline support uses vite-plugin-pwa (generateSW, output to dist/client) registered only from `src/lib/pwa-register.ts`, which refuses dev/preview/iframe hosts. Why: service workers in previews serve stale files.
+- Dataset, settings and trained model persist to localStorage via `src/lib/iris/storage.ts` using `ModelSnapshot`/`restoreModel`. Why: the installed app must keep working offline after a restart.
